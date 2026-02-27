@@ -6,7 +6,10 @@ GET http://localhost:3000/posts
 ###
 
 # 获取所有已发布的文章
+# @name getPublishedPosts
 GET http://localhost:3000/posts?published=true
+
+@first_post_id = {{getPublishedPosts.response.body.0.id}}
 
 ###
 
@@ -16,7 +19,7 @@ GET http://localhost:3000/posts/published
 ###
 
 # 根据ID获取单篇文章（每次调用会自动增加该文章的浏览量 views+1）
-GET http://localhost:3000/posts/2
+GET http://localhost:3000/posts/{{first_post_id}}
 
 ###
 
@@ -45,7 +48,7 @@ Content-Type: application/json
 ###
 
 # 更新文章
-PATCH http://localhost:3000/posts/2
+PATCH http://localhost:3000/posts/{{first_post_id}}
 Content-Type: application/json
 
 {
@@ -57,14 +60,14 @@ Content-Type: application/json
 ###
 
 # 增加文章浏览量（现在通过 GET /posts/:id 自动增加，此接口可选）
-POST http://localhost:3000/posts/2/views
+POST http://localhost:3000/posts/{{first_post_id}}/views
 
 ###
 
 # 增加文章点赞数
-POST http://localhost:3000/posts/2/likes
+POST http://localhost:3000/posts/{{first_post_id}}/likes
 
 ###
 
 # 删除文章
-DELETE http://localhost:3000/posts/1
+DELETE http://localhost:3000/posts/{{first_post_id}}

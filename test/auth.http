@@ -1,0 +1,50 @@
+### 用户注册
+POST http://localhost:3000/users/register
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "password123",
+  "name": "Test User"
+}
+
+### 用户登录
+# @name login
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "password123"
+}
+
+@access_token = {{login.response.body.access_token}}
+
+### 获取用户资料 (需要认证)
+GET http://localhost:3000/users/profile
+Authorization: Bearer {{access_token}}
+
+### 创建文章 (需要认证)
+POST http://localhost:3000/posts
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+{
+  "title": "Test Post",
+  "content": "This is a test post content.",
+  "published": true
+}
+
+### 更新文章 (需要认证)
+PATCH http://localhost:3000/posts/1
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+{
+  "title": "Updated Test Post",
+  "content": "This is an updated test post content."
+}
+
+### 删除文章 (需要认证)
+DELETE http://localhost:3000/posts/1
+Authorization: Bearer {{access_token}}
