@@ -122,6 +122,15 @@ export class PostsService {
   }
 
   async incrementLikes(id: number): Promise<Post> {
+    // 先检查记录是否存在
+    const existingPost = await this.prisma.post.findUnique({
+      where: { id },
+    });
+
+    if (!existingPost) {
+      throw new Error(`Post with id ${id} not found`);
+    }
+
     const post = await this.prisma.post.update({
       where: { id },
       data: {

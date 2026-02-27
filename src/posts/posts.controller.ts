@@ -36,7 +36,8 @@ export class PostsController {
 
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<PostEntity> {
-    return this.postsService.findOne(+id);
+    // 先增加浏览量，然后返回更新后的文章
+    return this.postsService.incrementViews(+id);
   }
 
   @Patch(':id')
