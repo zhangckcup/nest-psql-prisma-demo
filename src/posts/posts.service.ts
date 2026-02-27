@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { PrismaService } from '../prisma.service';
+import { PrismaService } from 'src/prisma.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { Post } from './entities/post.entity';
@@ -15,14 +15,19 @@ export class PostsService {
     }
     const truncated = content.substring(0, maxLength);
     const lastSpace = truncated.lastIndexOf(' ');
-    return lastSpace > 0 ? truncated.substring(0, lastSpace) + '...' : truncated + '...';
+    return lastSpace > 0
+      ? truncated.substring(0, lastSpace) + '...'
+      : truncated + '...';
   }
 
-  async create(createPostDto: CreatePostDto, authorId: number = 1): Promise<Post> {
+  async create(
+    createPostDto: CreatePostDto,
+    authorId: number = 1,
+  ): Promise<Post> {
     const { title, content, published = false } = createPostDto;
     const summary = this.generateSummary(content);
-    
-    let postData: any = {
+
+    const postData: any = {
       title,
       content,
       summary,
@@ -44,9 +49,7 @@ export class PostsService {
   }
 
   async findAll(publishedOnly: boolean = false): Promise<Post[]> {
-    const where: any = publishedOnly 
-      ? { published: true } 
-      : {};
+    const where: any = publishedOnly ? { published: true } : {};
 
     const posts = await this.prisma.post.findMany({
       where,
@@ -70,13 +73,16 @@ export class PostsService {
 
   async update(id: number, updatePostDto: UpdatePostDto): Promise<Post> {
     const existingPost = await this.findOne(id);
-    
+
     let summary = existingPost.summary;
-    if (updatePostDto.content && updatePostDto.content !== existingPost.content) {
+    if (
+      updatePostDto.content &&
+      updatePostDto.content !== existingPost.content
+    ) {
       summary = this.generateSummary(updatePostDto.content);
     }
 
-    let updateData: any = {
+    const updateData: any = {
       ...updatePostDto,
       summary,
     };
@@ -96,7 +102,7 @@ export class PostsService {
 
   async remove(id: number): Promise<void> {
     await this.findOne(id); // 确保文章存在
-    
+
     await this.prisma.post.delete({
       where: { id },
     });
